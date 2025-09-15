@@ -57,9 +57,7 @@ class Account:
         }
 
 class Transaction:
-    """交易流水类
-    表示一笔具体的收入或支出交易
-    """
+
     
     def __init__(self, transaction_id: str, account_id: str, amount: float, 
                  transaction_type: TransactionType, category: str, 
