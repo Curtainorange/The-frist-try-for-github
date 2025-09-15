@@ -1,0 +1,110 @@
+import tkinter as tk
+from tkinter import ttk, messagebox, filedialog
+import datetime
+from typing import List, Dict, Optional
+from enum import Enum
+import json
+
+
+class TransactionType(Enum):
+    """
+    定义系统中的两种基本交易类型：收入和支出
+    """
+    INCOME = "收入"  # 收入交易
+    EXPENSE = "支出"  # 支出交易
+
+class Account:
+    """账户类
+    表示一个资金账户，如现金、银行卡等
+    """
+    
+    def __init__(self, account_id: str, name: str, account_type: str, initial_balance: float = 0.0):
+        """
+        初始化账户对象
+        
+        参数:
+            account_id: 账户唯一标识符
+            name: 账户名称
+            account_type: 账户类型（现金、银行卡等）
+            initial_balance: 初始余额，默认为0
+        """
+        self.account_id = account_id  # 账户ID
+        self.name = name  # 账户名称
+        self.type = account_type  # 账户类型
+        self.balance = initial_balance  # 当前余额
+        self.created_at = datetime.datetime.now()  # 创建时间
+    
+    def update_balance(self, amount: float, transaction_type: TransactionType):
+        """
+        更新账户余额
+        
+        参数:
+            amount: 交易金额
+            transaction_type: 交易类型（收入/支出）
+        """
+        if transaction_type == TransactionType.INCOME:
+            self.balance += amount  # 收入增加余额
+        else:
+            self.balance -= amount  # 支出减少余额
+    
+    def to_dict(self):
+        """
+        将账户对象转换为字典，用于序列化存储
+        
+        返回:
+            dict: 包含账户信息的字典
+        """
+        return {
+            'account_id': self.account_id,
+            'name': self.name,
+            'type': self.type,
+            'balance': self.balance,
+            'created_at': self.created_at.isoformat()  # 时间转换为ISO格式字符串
+        }
+
+class Transaction:
+    """交易流水类
+    表示一笔具体的收入或支出交易
+    """
+    
+    def __init__(self, transaction_id: str, account_id: str, amount: float, 
+                 transaction_type: TransactionType, category: str, 
+                 description: str = "", tags: List[str] = None):
+        """
+        初始化交易对象
+        
+        参数:
+            transaction_id: 交易唯一标识符
+            account_id: 关联的账户ID
+            amount: 交易金额
+            transaction_type: 交易类型
+            category: 交易分类
+            description: 交易描述，可选
+            tags: 交易标签列表，可选
+        """
+        self.transaction_id = transaction_id  # 交易ID
+        self.account_id = account_id  # 关联账户ID
+        self.amount = amount  # 交易金额
+        self.type = transaction_type  # 交易类型
+        self.category = category  # 交易分类
+        self.description = description  # 交易描述
+        self.tags = tags or []  # 交易标签，默认为空列表
+        self.created_at = datetime.datetime.now()  # 交易时间
+    
+    def to_dict(self):
+        """
+        将交易对象转换为字典，用于序列化存储
+        
+        返回:
+            dict: 包含交易信息的字典
+        """
+        return {
+            'transaction_id': self.transaction_id,
+            'account_id': self.account_id,
+            'amount': self.amount,
+            'type': self.type.value,  # 使用枚举的值（中文字符串）
+            'category': self.category,
+            'description': self.description,
+            'tags': self.tags,
+            'created_at': self.created_at.isoformat()  # 时间转换为ISO格式字符串
+        }
