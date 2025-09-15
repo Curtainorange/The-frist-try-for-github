@@ -48,12 +48,6 @@ class Account:
             self.balance -= amount  # 支出减少余额
     
     def to_dict(self):
-        """
-        将账户对象转换为字典，用于序列化存储
-        
-        返回:
-            dict: 包含账户信息的字典
-        """
         return {
             'account_id': self.account_id,
             'name': self.name,
